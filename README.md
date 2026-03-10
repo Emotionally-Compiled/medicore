@@ -1,9 +1,12 @@
 # MediCore - Hospital Management System
 
+<div>
 <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg">
 <img src="https://img.shields.io/badge/Spring%20Boot-3.5.11-brightgreen.svg">
 <img src= "https://img.shields.io/badge/Java-21+-orange.svg">
 <img src= "https://img.shields.io/badge/Spring%20Cloud-2023.0.x-green.svg">
+</div>
+
 
 > Microservices-based hospital management platform built with Spring Boot
 

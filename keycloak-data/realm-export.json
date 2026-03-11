@@ -1,0 +1,34 @@
+{
+  "realm": "medicore-realm",
+  "enabled": true,
+  "registrationAllowed": true,
+  "roles": {
+    "realm": [
+      { "name": "Patient", "description": "Self-managed patient" },
+      { "name": "Doctor", "description": "Medical staff" },
+      { "name": "Receptionist", "description": "Patient and appointment administration" },
+      { "name": "Pharmacist", "description": "Pharmacy and inventory management" },
+      { "name": "Billing Staff", "description": "Invoicing and payments" },
+      { "name": "Admin", "description": "System administrator" },
+      { "name": "Super Admin", "description": "Absolute access" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "medicore-frontend",
+      "name": "Next.js Frontend Client",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [ "http://localhost:3000/*" ],
+      "webOrigins": [ "http://localhost:3000", "*" ]
+    },
+    {
+      "clientId": "medicore-microservices",
+      "name": "Spring Boot Backend Client",
+      "enabled": true,
+      "bearerOnly": true
+    }
+  ]
+}

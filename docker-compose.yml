@@ -1,0 +1,98 @@
+version: '3.8'
+
+# 🌐 Red global: Permite que Keycloak, Eureka y los microservicios se hablen entre sí
+networks:
+  hospital-network:
+    driver: bridge
+
+# 💾 Volúmenes: Evitan que los datos se borren si apagas la computadora
+volumes:
+  postgres_iam_data:
+  minio_data:
+
+services:
+  # ==========================================
+  # 🏗️ INFRAESTRUCTURA BASE (Servicios de 3ros)
+  # ==========================================
+
+  # 1. Base de datos exclusiva para Keycloak
+  postgres-iam:
+    image: postgres:15-alpine
+    container_name: medicore-postgres-iam
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: keycloak_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: root
+    ports:
+      - "5432:5432"
+    networks:
+      - medicore-network
+    volumes:
+      - postgres_iam_data:/var/lib/postgresql/data
+
+  # 2. Keycloak (Identity Provider / Seguridad)
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: 
+          medicore-keycloak
+    command: start-dev
+    restart: unless-stopped
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-iam:5432/keycloak_db
+      KC_DB_USERNAME: admin
+      KC_DB_PASSWORD: root
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    depends_on:
+      - postgres-iam
+    networks:
+      - medicore-network
+
+  # 3. MinIO (Almacenamiento de documentos hospitalarios tipo AWS S3)
+  minio:
+    image: minio/minio:latest
+    container_name: medicore-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: password123
+    ports:
+      - "9000:9000" # Puerto para la API (Spring Boot se conecta aquí)
+      - "9001:9001" # Puerto para la consola web (Tú entras por aquí)
+    networks:
+      - medicore-network
+    volumes:
+      - minio_data:/data
+
+
+  # ==========================================
+  # 🚀 MICROSERVICIOS DE SPRING BOOT
+  # (Descomentar a medida que el código esté listo)
+  # ==========================================
+
+  # eureka-server:
+  #   container_name: medicore-eureka
+  #   build: 
+  #     context: ../medicore-eureka-server # <- Ruta relativa a la carpeta hermana
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8761:8761"
+  #   networks:
+  #     - medicore-network
+
+  # api-gateway:
+  #   container_name: medicore-gateway
+  #   build: 
+  #     context: ../medicore-api-gateway
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - eureka-server
+  #   networks:
+  #     - medicore-network

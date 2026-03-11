@@ -42,39 +42,32 @@ cd medicore-infra
 .\setup-env.bat
 ```
 
+---
 
-*(Nota: Si usas Windows y el `.sh` no corre, clona los demás repositorios manualmente en la misma carpeta padre).*
+## 🔐 2. Secretos y Variables de Entorno (Política de Seguridad)
+**REGLA ESTRICTA:** Nunca subas un archivo `.env` a GitHub. Usamos un sistema de plantillas para mantener las credenciales seguras.
+
+1. Busca el archivo `.env.example` en esta carpeta.
+2. Crea una copia y cámbiale el nombre a exactamente `.env`.
+3. Rellena las contraseñas de desarrollo local (puedes usar las que vienen por defecto en el ejemplo para pruebas locales).
+
+> ⚠️ **Seguridad de la Información (IS):** El archivo `.env` está ignorado por Git. Si agregas un nuevo servicio que requiera contraseña, añade la llave a `.env.example` (vacía) y el valor real a tu `.env` local.
 
 ---
 
-## 🚀 3. Levantando la Infraestructura Base
+## 🚀 3. Orquestación con Docker
+Usamos Docker Compose para levantar la infraestructura "pesada" y que tú solo te preocupes por programar.
 
-No necesitas levantar toda la arquitectura si solo vas a trabajar en una parte. Usa Docker Compose desde esta carpeta (`medicore-infra`) según lo que necesites:
-
-**Si vas a trabajar en el Frontend (Next.js):**
-Solo necesitas levantar los servicios base de seguridad (Keycloak y su base de datos):
-
-```bash
-docker-compose up -d keycloak postgres-iam
-
-```
-
-**Si vas a trabajar integrando todo el sistema:**
-Levanta toda la infraestructura de golpe:
-
-```bash
-docker-compose up -d
-
-```
-
-**Para apagar todo y limpiar:**
-
-```bash
-docker-compose down
-
-```
+| Comando | Uso |
+| :--- | :--- |
+| `docker-compose up -d` | Levanta TODO (Bases de datos, Keycloak, MinIO). |
+| `docker-compose up -d keycloak` | Levanta solo Auth y DB (Ideal para devs de Frontend). |
+| `docker-compose stop` | Detiene los servicios sin borrar los datos. |
+| `docker-compose down -v` | **HARD RESET:** Borra los contenedores y ELIMINA las bases de datos. |
 
 ---
+
+
 
 ## 🗺️ 4. Mapa de Puertos Locales
 

@@ -9,6 +9,7 @@ cd ..
 call :SyncRepo medicore-eureka-server
 call :SyncRepo medicore-api-gateway
 call :SyncRepo medicore-config-server
+call :SyncRepo medicore-config-repo
 call :SyncRepo medicore-web-app
 
 echo =======================================================

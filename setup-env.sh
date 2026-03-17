@@ -11,6 +11,7 @@ REPOS=(
   "medicore-eureka-server"
   "medicore-api-gateway"
   "medicore-config-server"
+  "medicore-config-repo"
   "medicore-web-app"
 )
 

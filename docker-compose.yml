@@ -81,7 +81,7 @@ services:
     container_name: medicore-config
     build: 
       context: ../medicore-config-server
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8888:8888"
     networks:

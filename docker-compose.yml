@@ -74,6 +74,8 @@ services:
        dockerfile: Dockerfile
      ports:
        - "8761:8761"
+     environment:
+      - SPRING_PROFILES_ACTIVE=dev
      networks:
        - medicore-network
 
@@ -85,6 +87,7 @@ services:
     ports:
       - "8888:8888"
     environment:
+      - SPRING_PROFILES_ACTIVE=dev
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
     depends_on:
       - eureka-server

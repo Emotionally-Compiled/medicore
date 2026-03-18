@@ -19,7 +19,7 @@ services:
       POSTGRES_USER: ${IAM_DB_USER}
       POSTGRES_PASSWORD: ${IAM_DB_PASSWORD}
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - medicore-network
     volumes:

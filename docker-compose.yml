@@ -28,8 +28,7 @@ services:
   # 2. Keycloak (Identity Provider / security)
   keycloak:
     image: quay.io/keycloak/keycloak:23.0.0
-    container_name: 
-          medicore-keycloak
+    container_name: medicore-keycloak
     command: start-dev --import-realm
     restart: unless-stopped
     environment:
@@ -46,7 +45,7 @@ services:
     networks:
       - medicore-network
     volumes:
-      - ./realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./keycloak-data/realm-export.json:/opt/keycloak/data/import/realm-export.json
 
   # 3. MinIO 
   minio:
@@ -118,6 +117,7 @@ services:
        - CONFIG_URI=http://config-server:8888
        - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
        - KEYCLOAK_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+       - AUTH_SERVICE_URI=http://medicore-keycloak:8080
      depends_on:
        config-server:
          condition: service_healthy

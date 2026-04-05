@@ -11,6 +11,7 @@ call :SyncRepo medicore-api-gateway
 call :SyncRepo medicore-config-server
 call :SyncRepo medicore-config-repo
 call :SyncRepo medicore-web-app
+call :SyncRepo medicore-patients-service
 
 echo =======================================================
 echo ✅ Entorno sincronizado y listo para codear!

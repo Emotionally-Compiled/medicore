@@ -13,6 +13,7 @@ REPOS=(
   "medicore-config-server"
   "medicore-config-repo"
   "medicore-web-app"
+  "medicore-patients-service"
 )
 
 # 2. El script revisa uno por uno

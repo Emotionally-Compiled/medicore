@@ -1,5 +1,7 @@
 version: '3.8'
 
+name: medicore
+
 networks:
   medicore-network:
     driver: bridge
@@ -74,7 +76,7 @@ services:
      ports:
        - "8761:8761"
      environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
      healthcheck:
        test: [ "CMD", "curl", "-f", "http://localhost:8761" ]
        interval: 5s
@@ -91,8 +93,8 @@ services:
     ports:
       - "8888:8888"
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
     depends_on:
       - eureka-server
     healthcheck:
@@ -113,9 +115,9 @@ services:
      ports:
        - "8080:8080"
      environment:
-       - SPRING_PROFILES_ACTIVE=dev
-       - CONFIG_URI=http://config-server:8888
-       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+       - CONFIG_URI=${CONFIG_URI}
+       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
        - KEYCLOAK_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
        - AUTH_SERVICE_URI=http://medicore-keycloak:8080
      depends_on:
@@ -127,3 +129,37 @@ services:
        - medicore-network
 
 
+
+  # patients' microservice and db
+  patients-db:
+    image: postgres:15-alpine
+    container_name: medicore-patient-database
+    environment:
+      POSTGRES_USER: ${POSTGRES_PATIENTS_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PATIENTS_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_PATIENTS_DB}
+    ports:
+      - "5435:5432"
+    networks:
+      - medicore-network
+
+
+  patients-service:
+    container_name: medicore-patients
+    build:
+      context: ../medicore-patients-service
+      dockerfile: Dockerfile
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      - CONFIG_URI=${CONFIG_URI}
+      - PATIENTS_DATABASE=${PATIENTS_DATABASE}
+    networks:
+      - medicore-network
+    depends_on:
+      config-server:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy

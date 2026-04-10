@@ -30,7 +30,7 @@ services:
 
   # 2. Keycloak (Identity Provider / security)
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.0
+    image: quay.io/keycloak/keycloak:26.4
     container_name: medicore-keycloak
     command: start-dev --import-realm
     restart: unless-stopped
